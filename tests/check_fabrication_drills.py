@@ -6,7 +6,7 @@ from pathlib import Path
 import pcbnew
 
 project = Path(__file__).resolve().parents[1]
-folder = Path(sys.argv[1]) if len(sys.argv) > 1 else project / 'outputs/final_verification_20261113/gerbers'
+folder = Path(sys.argv[1]) if len(sys.argv) > 1 else project / 'outputs/narrow_verified_20261113/gerbers'
 board = pcbnew.LoadBoard(str(project / 'AFE_ECG_PPG_PTT.kicad_pcb'))
 expected = []
 for item in board.GetTracks():

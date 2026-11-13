@@ -121,7 +121,7 @@
 <body>
 <section aria-label="Trạng thái sửa thiết kế" style="border:2px solid #9a3412;padding:16px;margin:20px;color:#7c2d12;page-break-after:always">
 <h2>CAD và firmware đã kiểm trên máy · 13/11/2026</h2>
-<p>Báo cáo đã đính chính theo CAD mới, không thay thế hướng dẫn lắp đã duyệt hoặc kết quả nghiệm thu phần cứng. Schematic đã sửa hồi tiếp, bộ lọc và giao tiếp FR/ALERT; hai bài kiểm tra netlist PASS, ERC 0, còn hai loại kiểm tra không áp dụng được ghi trong báo cáo ERC. PCB đã dựng lại từ XML: DRC 0, unrouted 0, schematic parity 0. Hồ sơ mới nhất ở outputs/final_verification_20261113; module thực, phần mềm thu nhận và an toàn chưa nghiệm thu. Gói Gerber cũ không được dùng để đặt bo.</p>
+<p>Báo cáo đã đính chính theo CAD mới, không thay thế hướng dẫn lắp đã duyệt hoặc kết quả nghiệm thu phần cứng. Schematic đã sửa hồi tiếp, bộ lọc và giao tiếp FR/ALERT; hai bài kiểm tra netlist PASS, ERC 0, còn hai loại kiểm tra không áp dụng được ghi trong báo cáo ERC. PCB đã dựng lại từ XML: DRC 0, unrouted 0, schematic parity 0. Hồ sơ mới nhất ở outputs/narrow_verified_20261113; module thực, phần mềm thu nhận và an toàn chưa nghiệm thu. Gói Gerber cũ không được dùng để đặt bo.</p>
 <p>LDO không cách ly điện. Chưa có chứng nhận IEC 60601-1, kết quả thử trên người hoặc độ chính xác thời gian đo thực nghiệm. Không gắn điện cực lên người chỉ vì dùng pin hay CAD đã sạch; cần đánh giá an toàn phù hợp. Xem README của dự án để biết điều kiện thử và giới hạn kiểm chứng.</p>
 </section>
 
@@ -208,7 +208,7 @@
 <h2 class="section-title">2. PHÂN TÍCH VÀ TÍNH TOÁN NGUYÊN LÝ MẠCH (SCHEMATIC)</h2>
 
 <div class="img-container">
-    <img src="outputs/final_verification_20261113/PCB_Top.png" alt="Mặt trên PCB 3D">
+    <img src="outputs/narrow_verified_20261113/PCB_Top.png" alt="Layout mặt trên PCB 92 × 70 mm">
     <div class="img-caption">Hình 1: Mô hình 3D mặt trên bo mạch AFE ECG + PPG PTT thử nghiệm CAD.</div>
 </div>
 
@@ -226,24 +226,24 @@
 <h3>2.3 Nguồn và bypass</h3>
 <p>U3 MCP1700-2802E SOT-23: chân 1 GND, chân 2 VOUT = +VS_A 2.8 V, chân 3 VIN = +3V3. C10 = 1 µF tại đầu ra LDO, C9 = 1 µF tại đầu vào; C11 = 0.1 µF gần nguồn U1, C8 = 0.1 µF gần U2. LDO không cách ly điện và không bảo đảm loại bỏ toàn bộ nhiễu ESP32. Chưa có phép đo ripple, dropout hoặc tải đỉnh.</p>
 <div class="img-container">
-    <img src="outputs/final_verification_20261113/PCB_Top.png" alt="Phối cảnh Isometric PCB">
-    <div class="img-caption">Hình 2: Phối cảnh 3D góc nghiêng bo mạch phân vùng Analog / Digital rõ ràng.</div>
+    <img src="outputs/narrow_verified_20261113/PCB_Top.png" alt="Layout mặt trên PCB thu gọn">
+    <div class="img-caption">Hình 2: Layout mặt trên PCB thu gọn; không phải ảnh phần cứng đã lắp.</div>
 </div>
 
 <h2 class="section-title">3. THIẾT KẾ LAYOUT PCB VÀ PHÂN TÍCH DFM / EMC</h2>
 
 <h3>3.1 PCB mới và cổng kiểm CAD</h3>
-<p>Bo hai lớp 100 × 80 mm được dựng từ netlist XML hiện hành, 46 footprint và 151 node schematic. Đã thu ngắn các nút đầu vào, REFIN và hồi tiếp; đặt bypass gần U1/U2 và LDO. Socket ESP32 có hai hàng cách 25.4 mm. Vùng cấm đồng anten x = 68…100 mm, y = 0…12 mm áp dụng cả F.Cu/B.Cu. B.Cu có vùng GND đã refill; các đường B.Cu vẫn tạo khe nên không gọi toàn bộ mặt đáy là plane nguyên vẹn.</p>
-<table><thead><tr><th>Kiểm tra</th><th>Kết quả ngày 12/11/2026</th><th>Giới hạn</th></tr></thead><tbody>
+<p>Bo hai lớp 92 × 70 mm, giảm 19,5% diện tích từ 100 × 80 mm; giữ 46 footprint và 151 node schematic. ESP32 dịch trái 8 mm tới (63; 16), J3 giữ tại (58; 16), H2/H4 tại (54; 6)/(54; 65). Jack J1 tại (14; 5,55), hướng cắm ra cạnh trên. Fanout và ground return C8 đã sửa; chưa đo nhiễu thực. Đã thu ngắn các nút đầu vào, REFIN và hồi tiếp; đặt bypass gần U1/U2 và LDO. Socket ESP32 có hai hàng cách 25.4 mm. Vùng cấm đồng anten x = 60…92 mm, y = 0…12 mm áp dụng cả F.Cu/B.Cu. B.Cu có vùng GND đã refill; các đường B.Cu vẫn tạo khe nên không gọi toàn bộ mặt đáy là plane nguyên vẹn.</p>
+<table><thead><tr><th>Kiểm tra</th><th>Kết quả bản thu gọn ngày 13/11/2026</th><th>Giới hạn</th></tr></thead><tbody>
 <tr><td>ERC, KiCad 10.0.8</td><td>0 lỗi / 0 cảnh báo được bật</td><td>Hai loại không áp dụng: SPICE và global label chỉ xuất hiện một lần; xem erc.rpt</td></tr>
-<tr><td>DRC, unrouted, schematic parity</td><td>0 / 0 / 0</td><td>Xem outputs/final_verification_20261113/drc.json; ignored_checks rỗng</td></tr>
+<tr><td>DRC, unrouted, schematic parity</td><td>0 / 0 / 0</td><td>Xem outputs/narrow_verified_20261113/drc.json; ignored_checks rỗng</td></tr>
 <tr><td>Đối chiếu netlist độc lập</td><td>PASS: ref, value, footprint, symbol path, pad/net</td><td>Không chứng minh đáp ứng analog hoặc tính an toàn</td></tr>
 <tr><td>DFM và module thực</td><td>Chưa phát hành</td><td>Chưa xác nhận mẫu socket/module, báo giá xưởng, stencil, viewer toàn gói và phép đo bench</td></tr>
 </tbody></table>
 <h2 class="section-title">4. THUẬT TOÁN ĐỒNG BỘ VÀ XỬ LÝ TÍN HIỆU THỜI GIAN THỰC</h2>
 
 <div class="img-container">
-    <img src="outputs/final_verification_20261113/PCB_Top.png" alt="Mặt dưới PCB 3D">
+    <img src="outputs/narrow_verified_20261113/PCB_Bottom.png" alt="Layout mặt dưới PCB thu gọn">
     <div class="img-caption">Hình 3: PCB mới sau route, không phải bằng chứng lắp ráp hoặc thử nghiệm vật lý.</div>
 </div>
 
@@ -279,7 +279,7 @@
 </ul>
 
 <h2 class="section-title">5. DANH MỤC LINH KIỆN VÀ DỰ TOÁN NGÂN SÁCH (BOM & BUDGET)</h2>
-<p>BOM hiện hành xuất trực tiếp từ schematic tại outputs/final_verification_20261113/BOM.csv. Có 11 tụ, 18 điện trở, 3 IC, 3 connector/module interface, 4 lỗ GND và 7 testpoint. Không gán mã LCSC hoặc giá khi chưa đối chiếu MPN, dung sai, điện áp/công suất và tình trạng bán hàng. Ngân sách 500.000 VND là mục tiêu, chưa có báo giá xác nhận.</p>
+<p>BOM hiện hành xuất trực tiếp từ schematic tại outputs/narrow_verified_20261113/BOM.csv. Có 11 tụ, 18 điện trở, 3 IC, 3 connector/module interface, 4 lỗ GND và 7 testpoint. Không gán mã LCSC hoặc giá khi chưa đối chiếu MPN, dung sai, điện áp/công suất và tình trạng bán hàng. Ngân sách 500.000 VND là mục tiêu, chưa có báo giá xác nhận.</p>
 <p>MAX30102: chưa chọn và xác nhận chính xác module bảy chân VIN/SCL/SDA/INT/RD/IRD/GND. ESP32: footprint theo DevKitC V4 38 chân, không bảo đảm mọi board clone. Cần đối chiếu mẫu thật, thứ tự chân, mức logic và in 1:1 trước đặt bo. Lỗ bắt vít/testpoint không phải linh kiện dán máy; file placement_mm.csv là tọa độ kỹ thuật, chưa duyệt lắp ráp tự động.</p>
 <h2 class="section-title">6. HƯỚNG DẪN GIA CÔNG, HÀN LẮP VÀ NGHIỆM THU (TESTING CHECKLIST)</h2>
 
@@ -367,7 +367,7 @@
     </tbody>
 </table>
 
-<div class="callout-warn"><h3>Trạng thái bàn giao ngày 13/11/2026</h3><p>CAD mới đã qua kiểm tra trong outputs/final_verification_20261113, DRC không có loại bị bỏ qua. Gerber đã mở và render bằng gerbv 2.10.0; 86 lỗ và slot được đối chiếu với PCB. gerbv bỏ qua thuộc tính metadata X2, không có lỗi parser hình học khác được ghi nhận. Gói cũ bị giữ trạng thái REJECT, bản PCB trước dựng lại được bảo toàn. Firmware và host đã tích hợp bản sửa ngày 13/11/2026: packet tách E/P giữ từng mẫu FIFO, báo lỗi I²C và timestamp chưa chắc chắn, giữ queue-drop đến khi enqueue thành công. Test helper C biên dịch mới, enqueue thực trên host harness, protocol và DSP đều PASS; mô phỏng nhận 13 nhịp. Build ESP-IDF v5.5 cho ESP32 đã PASS, gồm ứng dụng 776160 byte, bootloader và partition table; lần build kiểm lại cũng PASS. Chưa kiểm timing trên bo thật; PAT từ firmware vẫn bị khóa. Chưa phát hành chế tạo, chưa nghiệm thu sản phẩm và không cho phép sử dụng trên người.</p></div>
+<div class="callout-warn"><h3>Trạng thái bàn giao ngày 13/11/2026</h3><p>CAD mới đã qua kiểm tra trong outputs/narrow_verified_20261113, DRC không có loại bị bỏ qua. Gerber đã mở và render bằng gerbv 2.10.0; 86 lỗ và slot được đối chiếu với PCB. gerbv bỏ qua metadata X2 và có cảnh báo nhận diện lớp đáy rỗng/mask chỉ dùng region; chưa được duyệt CAM với xưởng. Gói cũ bị giữ trạng thái REJECT, bản PCB trước dựng lại được bảo toàn. Firmware và host đã tích hợp bản sửa ngày 13/11/2026: packet tách E/P giữ từng mẫu FIFO, báo lỗi I²C và timestamp chưa chắc chắn, giữ queue-drop đến khi enqueue thành công. Test helper C biên dịch mới, enqueue thực trên host harness, protocol và DSP đều PASS; mô phỏng nhận 13 nhịp. Build ESP-IDF v5.5 cho ESP32 đã PASS, gồm ứng dụng 776160 byte, bootloader và partition table; lần build kiểm lại cũng PASS. Chưa kiểm timing trên bo thật; PAT từ firmware vẫn bị khóa. Chưa phát hành chế tạo, chưa nghiệm thu sản phẩm và không cho phép sử dụng trên người.</p></div>
 <h3>Nguồn kỹ thuật</h3><ul>
 <li><a href="https://www.analog.com/media/en/technical-documentation/data-sheets/AD8232.pdf">AD8232 Rev. D, Figure 60 và Figure 66</a></li>
 <li><a href="https://www.ti.com/lit/ds/symlink/ads1115.pdf">TI ADS1115, package DGS và conversion-ready</a></li>
