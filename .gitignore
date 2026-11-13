@@ -1,0 +1,9 @@
+build/
+sdkconfig
+sdkconfig.old
+__pycache__/
+*.pyc
+**/tests/test_runner
+*.kicad_prl
+*.lck
+firmware/esp32_ptt_streamer/main/network_config.local.h

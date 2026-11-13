@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Báo Cáo Đồ Án: Thiết Kế Bo Mạch AFE ECG + PPG Ước Lượng PTT</title>
+<style>
+    @page { size: A4; margin: 20mm; }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #1e293b;
+        background: #fff;
+        margin: 0;
+        padding: 0;
+    }
+    .cover {
+        text-align: center;
+        padding: 100px 20px 40px;
+        page-break-after: always;
+    }
+    .cover h1 {
+        font-size: 26pt;
+        color: #0f172a;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        font-weight: 800;
+    }
+    .cover h2 {
+        font-size: 16pt;
+        color: #2563eb;
+        font-weight: 600;
+        margin-top: 0;
+    }
+    .cover-meta {
+        margin-top: 150px;
+        font-size: 13pt;
+        line-height: 2;
+    }
+    .cover-badge {
+        display: inline-block;
+        background: #e0f2fe;
+        color: #0369a1;
+        padding: 6px 16px;
+        border-radius: 9999px;
+        font-weight: 700;
+        font-size: 11pt;
+        margin-bottom: 20px;
+    }
+    h2.section-title {
+        font-size: 18pt;
+        color: #0f172a;
+        border-bottom: 2px solid #2563eb;
+        padding-bottom: 6px;
+        margin-top: 40px;
+    }
+    h3 {
+        font-size: 14pt;
+        color: #1e40af;
+        margin-top: 25px;
+    }
+    p, li {
+        font-size: 11pt;
+        text-align: justify;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        font-size: 10pt;
+    }
+    th, td {
+        border: 1px solid #cbd5e1;
+        padding: 8px 12px;
+        text-align: left;
+    }
+    th {
+        background-color: #f1f5f9;
+        color: #0f172a;
+        font-weight: 700;
+    }
+    tr:nth-child(even) { background-color: #f8fafc; }
+    .callout {
+        background: #f0fdf4;
+        border-left: 4px solid #16a34a;
+        padding: 12px 16px;
+        margin: 20px 0;
+        border-radius: 4px;
+    }
+    .callout-warn {
+        background: #fef2f2;
+        border-left: 4px solid #dc2626;
+        padding: 12px 16px;
+        margin: 20px 0;
+        border-radius: 4px;
+    }
+    .img-container {
+        text-align: center;
+        margin: 25px 0;
+    }
+    .img-container img {
+        max-width: 95%;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        border: 1px solid #e2e8f0;
+    }
+    .img-caption {
+        font-size: 9.5pt;
+        color: #64748b;
+        margin-top: 8px;
+        font-style: italic;
+    }
+    code {
+        font-family: 'Courier New', Courier, monospace;
+        background: #f1f5f9;
+        padding: 2px 4px;
+        border-radius: 3px;
+        font-size: 9.5pt;
+    }
+</style>
+</head>
+<body>
+<section aria-label="Trạng thái sửa thiết kế" style="border:2px solid #9a3412;padding:16px;margin:20px;color:#7c2d12;page-break-after:always">
+<h2>CAD và firmware đã kiểm trên máy · 13/11/2026</h2>
+<p>Báo cáo đã đính chính theo CAD mới, không thay thế hướng dẫn lắp đã duyệt hoặc kết quả nghiệm thu phần cứng. Schematic đã sửa hồi tiếp, bộ lọc và giao tiếp FR/ALERT; hai bài kiểm tra netlist PASS, ERC 0, còn hai loại kiểm tra không áp dụng được ghi trong báo cáo ERC. PCB đã dựng lại từ XML: DRC 0, unrouted 0, schematic parity 0. Hồ sơ mới nhất ở outputs/final_verification_20261113; module thực, phần mềm thu nhận và an toàn chưa nghiệm thu. Gói Gerber cũ không được dùng để đặt bo.</p>
+<p>LDO không cách ly điện. Chưa có chứng nhận IEC 60601-1, kết quả thử trên người hoặc độ chính xác thời gian đo thực nghiệm. Không gắn điện cực lên người chỉ vì dùng pin hay CAD đã sạch; cần đánh giá an toàn phù hợp. Xem README của dự án để biết điều kiện thử và giới hạn kiểm chứng.</p>
+</section>
+
+<div class="cover">
+    <div class="cover-badge">ĐỒ ÁN THIẾT KẾ PHẦN CỨNG PCB & NHÚNG Y SINH</div>
+    <h1>THIẾT KẾ BO MẠCH AFE ECG + PPG<br>ƯỚC LƯỢNG THỜI GIAN LAN TRUYỀN SÓNG MẠCH (PTT/PAT)</h1>
+    <h2>HỆ THỐNG THU NHẬP ĐỒNG THỜI ECG MỘT CHUYỂN ĐẠO VÀ PPG QUANG HỌC DÙNG ESP32</h2>
+
+    <div class="cover-meta">
+
+
+
+        <strong>Chuyên ngành:</strong> Điện tử - Viễn thông / Kỹ thuật Phần cứng PCB & Nhúng<br>
+        <strong>Thời gian hoàn thành:</strong> Tháng 11 / 2026
+    </div>
+</div>
+
+<h2 class="section-title">1. TỔNG QUAN ĐỀ TÀI VÀ CƠ SỞ KỸ THUẬT</h2>
+<p>
+    Thời gian lan truyền sóng mạch (<strong>Pulse Transit Time - PTT</strong>) là khoảng thời gian sóng xung áp lực động mạch di chuyển giữa hai điểm trong hệ mạch máu. Trong y sinh, PTT có mối tương quan nghịch biến chặt chẽ với huyết áp động mạch (Blood Pressure) và độ cứng thành mạch (Arterial Stiffness). Khi huyết áp tăng, thành động mạch căng cứng hơn khiến tốc độ truyền sóng mạch (Pulse Wave Velocity - PWV) tăng lên, dẫn đến PTT rút ngắn lại.
+</p>
+<p>
+    Do kỹ thuật đo PTT kinh điển cần đặt hai cảm biến áp lực hoặc quang học dọc theo một động mạch (như từ động mạch cảnh đến động mạch đùi), phương pháp phổ biến và thuận tiện nhất trong các thiết bị đeo (wearable) là đo <strong>Pulse Arrival Time (PAT)</strong>: khoảng thời gian tính từ đỉnh sóng <strong>R</strong> trên điện tâm đồ (ECG) đại diện cho thời điểm khử cực thất trái đến chân sóng mạch thể tích quang học (<strong>PPG</strong>) thu được tại mao mạch đầu ngón tay.
+</p>
+<div class="callout">
+    <strong>Công thức cơ bản:</strong>
+    <span>Công thức lịch sử đã thay bằng tính toán ở mục 2.</span>
+    Trong đó, <em>PEP (Pre-Ejection Period)</em> là thời gian tiền tống máu (từ lúc thất trái co đẳng tích đến khi van động mạch chủ mở). Mặc dù PAT bao gồm cả PEP, các nghiên cứu lâm sàng chứng minh biến thiên của PAT bám sát biến thiên huyết áp tức thời, mở ra tiềm năng đo huyết áp liên tục không cần băng bơm khí (Cuffless Blood Pressure Monitoring).
+</div>
+
+<h3>1.1 Thông số kỹ thuật thiết kế (Engineering Specifications)</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Khối chức năng</th>
+            <th>Thông số thiết kế</th>
+            <th>Cơ sở kỹ thuật & Ghi chú</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><strong>Kênh đo ECG</strong></td>
+            <td>1 chuyển đạo vi sai, 3 điện cực (RA, LA, RL)<br>Băng thông: 0.5 Hz – 40 Hz<br>Độ lợi tổng (Gain): 1100 V/V (60.8 dB)</td>
+            <td>IC chuyên dụng Analog Devices AD8232ACPZ.<br>Cấu hình y tế "Cardiac Monitor" tiêu chuẩn.</td>
+        </tr>
+        <tr>
+            <td><strong>Dò hở điện cực</strong></td>
+            <td>LOD+ và LOD− (DC Lead-Off Detection)</td>
+            <td>Phát hiện khi điện cực tuột khỏi bề mặt da bệnh nhân thông qua 2 điện trở kéo lên 10 MΩ.</td>
+        </tr>
+        <tr>
+            <td><strong>Bộ chuyển đổi ADC ECG</strong></td>
+            <td>TI ADS1115IDGST 16-Bit ΔΣ ADC<br>Tốc độ lấy mẫu: 475 SPS (tùy chọn 860 SPS)<br>Giao tiếp I2C Fast-Mode (400 kHz)</td>
+            <td>Đo vi sai (AIN0 − AIN1) với PGA ±2.048V.<br>Chân ALERT/RDY phát ngắt phần cứng báo mẫu hoàn tất.</td>
+        </tr>
+        <tr>
+            <td><strong>Kênh đo PPG</strong></td>
+            <td>Module cảm biến quang MAX30102<br>Kênh hồng ngoại (IR 880 nm), 400 SPS, 18-bit<br>Độ rộng xung LED: 411 µs</td>
+            <td>Cắm qua header 7 chân giả định, chưa xác nhận module thực (VIN, SCL, SDA, INT, RD, IRD, GND). Địa chỉ I2C: <code>0x57</code>.</td>
+        </tr>
+        <tr>
+            <td><strong>Đồng bộ thời gian</strong></td>
+            <td>Bộ đếm thời gian thực 64-bit microsecond<br>Độ phân giải bộ đếm không phải độ chính xác đồng bộ. Chưa có phép đo timing trên phần cứng.</td>
+            <td>Sử dụng đồng hồ nội vi phần cứng <code>esp_timer_get_time()</code> của ESP32 qua ngắt ngoài ISR.</td>
+        </tr>
+        <tr>
+            <td><strong>Nguồn nuôi & An toàn</strong></td>
+            <td>Nguồn pin Li-ion 3.7V hoặc Power Bank 5V<br>LDO Analog riêng: MCP1700-2802E (2.8V danh định)</td>
+            <td>LDO không cách ly điện. R1/R2/R3 = 360 kΩ không thay thế đánh giá an toàn hoặc chứng nhận IEC 60601-1.</td>
+        </tr>
+        <tr>
+            <td><strong>Kích thước PCB</strong></td>
+            <td>100 mm × 80 mm (Chuẩn 2 lớp, ≤100×100mm)</td>
+            <td>Giá gia công và vận chuyển chưa có báo giá xác nhận.</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="callout-warn">
+    <strong>NGUYÊN TẮC AN TOÀN SINH HỌC TUYỆT ĐỐI:</strong>
+    Không gắn điện cực lên người chỉ vì dùng pin hoặc CAD đã sạch. Cần đánh giá an toàn phù hợp; không nối USB, bộ sạc hoặc thiết bị đo có thể tạo đường dẫn tới điện lưới khi đang gắn điện cực.
+</div>
+
+<h2 class="section-title">2. PHÂN TÍCH VÀ TÍNH TOÁN NGUYÊN LÝ MẠCH (SCHEMATIC)</h2>
+
+<div class="img-container">
+    <img src="outputs/final_verification_20261113/PCB_Top.png" alt="Mặt trên PCB 3D">
+    <div class="img-caption">Hình 1: Mô hình 3D mặt trên bo mạch AFE ECG + PPG PTT thử nghiệm CAD.</div>
+</div>
+
+<h3>2.1 Khối AD8232: topology đã sửa</h3>
+<p>AD8232 dùng rail analog 2.8 V. Chân 9 OPAMP− nối R13.2 và R14.1; R13 = 100 kΩ về REFOUT, R14 = 1 MΩ về OUT. Độ lợi op-amp danh định K = 1 + R14/R13 = 11. Tầng IA có độ lợi danh định 100; tích danh định 1100 không phải đáp ứng toàn hệ thống đã đo.</p>
+<ul>
+<li>R1/R2/R3 = 360 kΩ trên ba đường điện cực. R4/R5 = 10 MΩ cấp bias phía đầu nối. Không suy ra chứng nhận an toàn từ các điện trở này.</li>
+<li>HPF theo Figure 66: C1 = C2 = 0.33 µF, R6 = R8 = 10 MΩ, R18 = 1.4 MΩ. Chân SW nối C2.1/R18.2; C2.2 về REFOUT. Cần đo tần số cắt và thời gian hồi phục trên nguồn tín hiệu giả lập.</li>
+<li>LPF Sallen-Key: R11 = R12 = 1 MΩ, C5 = 1.5 nF, C6 = 10 nF, K = 11. Với T = √(R11·C5·R12·C6), f0 = 1/(2πT) ≈ 41.09 Hz; Q = T/[R11·C6 + R12·C6 + R11·C5·(1−K)] ≈ 0.775. Đây là tính toán lý tưởng theo Figure 60, không phải phép đo băng thông.</li>
+<li>RLD có C3 = 1 nF giữa RLDFB và RLD_E, R3 = 360 kΩ nối ra RL_E. REFIN dùng R9/R10 = 10 MΩ và C4 = 0.1 µF. REFOUT danh định gần nửa rail analog, khoảng 1.4 V, phải đo thực tế.</li>
+<li>FR và SDN nối +VS_A. GPIO25/J2.9 không nối; firmware không được điều khiển FR bằng 3.3 V.</li>
+</ul>
+<h3>2.2 ADS1115 và giao tiếp</h3>
+<p>ADS1115IDGST dùng package DGS VSSOP-10; footprint KiCad TSSOP-10_3x3mm_P0.5mm có land pattern tương thích DGS. AIN0 nhận ECG_OUT, AIN1 nhận REFOUT. R15 = 1 kΩ nối OUT đến ECG_OUT, C7 = 10 nF về GND; không phải mạng lọc vi sai đối xứng hai điện trở. ALERT/RDY có R19 = 10 kΩ kéo lên 3V3 và nối GPIO27. I²C dùng R16/R17 = 4.7 kΩ; phải đo rise time với module và điện dung bus thực.</p>
+<h3>2.3 Nguồn và bypass</h3>
+<p>U3 MCP1700-2802E SOT-23: chân 1 GND, chân 2 VOUT = +VS_A 2.8 V, chân 3 VIN = +3V3. C10 = 1 µF tại đầu ra LDO, C9 = 1 µF tại đầu vào; C11 = 0.1 µF gần nguồn U1, C8 = 0.1 µF gần U2. LDO không cách ly điện và không bảo đảm loại bỏ toàn bộ nhiễu ESP32. Chưa có phép đo ripple, dropout hoặc tải đỉnh.</p>
+<div class="img-container">
+    <img src="outputs/final_verification_20261113/PCB_Top.png" alt="Phối cảnh Isometric PCB">
+    <div class="img-caption">Hình 2: Phối cảnh 3D góc nghiêng bo mạch phân vùng Analog / Digital rõ ràng.</div>
+</div>
+
+<h2 class="section-title">3. THIẾT KẾ LAYOUT PCB VÀ PHÂN TÍCH DFM / EMC</h2>
+
+<h3>3.1 PCB mới và cổng kiểm CAD</h3>
+<p>Bo hai lớp 100 × 80 mm được dựng từ netlist XML hiện hành, 46 footprint và 151 node schematic. Đã thu ngắn các nút đầu vào, REFIN và hồi tiếp; đặt bypass gần U1/U2 và LDO. Socket ESP32 có hai hàng cách 25.4 mm. Vùng cấm đồng anten x = 68…100 mm, y = 0…12 mm áp dụng cả F.Cu/B.Cu. B.Cu có vùng GND đã refill; các đường B.Cu vẫn tạo khe nên không gọi toàn bộ mặt đáy là plane nguyên vẹn.</p>
+<table><thead><tr><th>Kiểm tra</th><th>Kết quả ngày 12/11/2026</th><th>Giới hạn</th></tr></thead><tbody>
+<tr><td>ERC, KiCad 10.0.8</td><td>0 lỗi / 0 cảnh báo được bật</td><td>Hai loại không áp dụng: SPICE và global label chỉ xuất hiện một lần; xem erc.rpt</td></tr>
+<tr><td>DRC, unrouted, schematic parity</td><td>0 / 0 / 0</td><td>Xem outputs/final_verification_20261113/drc.json; ignored_checks rỗng</td></tr>
+<tr><td>Đối chiếu netlist độc lập</td><td>PASS: ref, value, footprint, symbol path, pad/net</td><td>Không chứng minh đáp ứng analog hoặc tính an toàn</td></tr>
+<tr><td>DFM và module thực</td><td>Chưa phát hành</td><td>Chưa xác nhận mẫu socket/module, báo giá xưởng, stencil, viewer toàn gói và phép đo bench</td></tr>
+</tbody></table>
+<h2 class="section-title">4. THUẬT TOÁN ĐỒNG BỘ VÀ XỬ LÝ TÍN HIỆU THỜI GIAN THỰC</h2>
+
+<div class="img-container">
+    <img src="outputs/final_verification_20261113/PCB_Top.png" alt="Mặt dưới PCB 3D">
+    <div class="img-caption">Hình 3: PCB mới sau route, không phải bằng chứng lắp ráp hoặc thử nghiệm vật lý.</div>
+</div>
+
+<h3>4.1 Cơ chế đồng bộ thời gian phần cứng trên ESP32</h3>
+<p>
+    Do tần số dao động nội của ADS1115 có thể lệch tới ± 10% theo nhiệt độ môi trường, việc dựa vào tốc độ lấy mẫu cố định theo lý thuyết sẽ tạo ra sai số tích lũy nghiêm trọng. Giải pháp trong đề tài là sử dụng kiến trúc <strong>Event-Driven Hardware Timestamping</strong>:
+</p>
+<ul>
+    <li>Chân <code>ALERT/RDY</code> của ADS1115 kích hoạt ngắt ngoài (Falling Edge ISR) trên GPIO27.</li>
+    <li>Bên trong hàm ngắt ISR, hệ thống đọc ngay lập tức giá trị bộ đếm thời gian 64-bit <code>esp_timer_get_time()</code> (độ phân giải 1 µs) và đẩy vào hàng đợi FreeRTOS (Queue).</li>
+    <li>Task I2C chạy trên Core 0 đọc giá trị chuyển đổi từ ADS1115 và mẫu quang từ FIFO MAX30102, đóng gói cùng nhãn thời gian và gửi về máy tính qua kết nối UDP Wi-Fi với độ trễ và jitter chưa được đo trên phần cứng.</li>
+</ul>
+
+<h3>4.2 Thuật toán Pan-Tompkins phát hiện đỉnh R</h3>
+<p>
+    Tín hiệu ECG số được xử lý qua chuỗi giải thuật phát hiện phức bộ QRS nổi tiếng của Pan-Tompkins:
+</p>
+<ol>
+    <li><strong>Bộ lọc dải thông (5 – 15 Hz):</strong> Tập trung năng lượng đỉnh QRS, triệt tiêu sóng P, T và trôi đường đẳng điện.</li>
+    <li><strong>Bộ vi sai 5 điểm (Five-point derivative):</strong> Làm nổi bật sườn dốc đứng của phức bộ QRS.</li>
+    <li><strong>Phép bình phương (Squaring):</strong> Khuếch đại phi tuyến tính các biên độ lớn và biến tín hiệu thành dương hoàn toàn.</li>
+    <li><strong>Tích phân cửa sổ trượt (Moving Window Integration):</strong> Cửa sổ 150 ms tạo xung bao năng lượng QRS.</li>
+    <li><strong>Ngưỡng thích nghi kép (Adaptive Dual Threshold):</strong> Cập nhật liên tục theo ngưỡng tín hiệu và ngưỡng nhiễu để định vị chính xác đỉnh R trên tín hiệu gốc.</li>
+</ol>
+
+<h3>4.3 Thuật toán phát hiện chân sóng PPG và tính toán PAT</h3>
+<ul>
+    <li>Tín hiệu PPG hồng ngoại được lọc thông thấp 8 Hz.</li>
+    <li>Tính đạo hàm bậc một và đạo hàm bậc hai (d^2PPG/dt^2). Chân sóng mạch (Foot of PPG) được xác định tại thời điểm gia tốc thể tích máu tăng vọt (cực đại của đạo hàm bậc hai trước đỉnh sóng mạch).</li>
+    <li>Với mỗi đỉnh R tại thời điểm t_R, thuật toán tìm kiếm chân sóng PPG đầu tiên xuất hiện trong cửa sổ sinh lý học [t_R + 120 ms, t_R + 400 ms].</li>
+    <li>Khoảng thời gian: PAT = t_PPG foot - t_R được ghi nhận cho từng nhịp đập.</li>
+    <li><strong>Trễ nhóm:</strong> phụ thuộc tần số và toàn chuỗi analog/số. Không trừ mặc định 5.6 ms để tuyên bố PTT chính xác. PAT = t(PPG foot) − t(R), chứa PEP; phép đo timing cần tín hiệu giả lập cùng nguồn thời gian và hiệu chuẩn.</li>
+</ul>
+
+<h2 class="section-title">5. DANH MỤC LINH KIỆN VÀ DỰ TOÁN NGÂN SÁCH (BOM & BUDGET)</h2>
+<p>BOM hiện hành xuất trực tiếp từ schematic tại outputs/final_verification_20261113/BOM.csv. Có 11 tụ, 18 điện trở, 3 IC, 3 connector/module interface, 4 lỗ GND và 7 testpoint. Không gán mã LCSC hoặc giá khi chưa đối chiếu MPN, dung sai, điện áp/công suất và tình trạng bán hàng. Ngân sách 500.000 VND là mục tiêu, chưa có báo giá xác nhận.</p>
+<p>MAX30102: chưa chọn và xác nhận chính xác module bảy chân VIN/SCL/SDA/INT/RD/IRD/GND. ESP32: footprint theo DevKitC V4 38 chân, không bảo đảm mọi board clone. Cần đối chiếu mẫu thật, thứ tự chân, mức logic và in 1:1 trước đặt bo. Lỗ bắt vít/testpoint không phải linh kiện dán máy; file placement_mm.csv là tọa độ kỹ thuật, chưa duyệt lắp ráp tự động.</p>
+<h2 class="section-title">6. HƯỚNG DẪN GIA CÔNG, HÀN LẮP VÀ NGHIỆM THU (TESTING CHECKLIST)</h2>
+
+<h3>6.1 Quy trình hàn dán linh kiện SMD</h3>
+<ol>
+    <li><strong>Bước 1 - Hàn IC AD8232 (LFCSP-20):</strong> Do chân IC nằm dưới thân và có pad nhiệt ở đáy, cần dùng kem hàn (solder paste) quét đều lên pad, căn chỉnh chip chính xác dưới kính lúp, sau đó dùng máy khò nhiệt ở profile nhiệt theo solder paste và giới hạn package đã xác nhận, dùng thermocouple thay vì suy ra từ nhiệt độ đặt máy khò để chip tự hút vào pad nhờ sức căng bề mặt chì hàn.</li>
+    <li><strong>Bước 2 - Hàn IC ADS1115 (VSSOP-10) và LDO MCP1700 (SOT-23):</strong> Dùng mỏ hàn mũi dao siêu nhọn hoặc khò nhiệt. Dùng dây hút chì dọn sạch nếu xuất hiện cầu hàn giữa các chân pitch 0.5mm.</li>
+    <li><strong>Bước 3 - Hàn linh kiện thụ động (Điện trở & Tụ 0603):</strong> Hàn lần lượt từ các linh kiện ở trung tâm ra phía ngoài mép bo.</li>
+    <li><strong>Bước 4 - Hàn socket header và cổng Jack 3.5mm:</strong> Hàn chân cắm xuyên lỗ cuối cùng bằng mỏ hàn nhiệt thông thường.</li>
+    <li><strong>Bước 5 - Vệ sinh hóa chất:</strong> Dùng cồn Isopropyl Alcohol (IPA) 99% và bàn chải chuyên dụng rửa sạch hoàn toàn tàn dư nhựa thông / flux hàn. Vì các nút có trở kháng cực cao (như R4/R5/R6/R8/R9/R10 = 10 MΩ), lớp flux bẩn dẫn điện sẽ tạo dòng rò bề mặt làm biến dạng đáp ứng tần số của mạch.</li>
+</ol>
+
+<h3>6.2 Quy trình đo kiểm nghiệm thu 7 bước (Verification Checklist & Audit Độc Lập)</h3>
+<p style="color: #b91c1c; font-weight: bold; background: #fee2e2; padding: 10px; border-left: 4px solid #ef4444; border-radius: 4px;">
+    ⚠️ CẢNH BÁO AN TOÀN & BẢO LƯU KIỂM THỬ: Hệ thống KHÔNG CÓ biến áp/cách ly quang y tế chuẩn IEC 60601-1 (LDO MCP1700 không cách ly điện). Toàn bộ thử nghiệm thuật toán và đồng bộ thời gian thực hiện tại được xác thực trên MÔ PHỎNG VÀ DỮ LIỆU TỔNG HỢP (SYNTHETIC TELEMETRY), TUYỆT ĐỐI KHÔNG cấp chứng nhận thử nghiệm trên người khi chưa qua kiểm định an toàn điện áp lưới và dòng rò y tế.
+</p>
+<table>
+    <thead>
+        <tr>
+            <th>Bước</th>
+            <th>Phép thử nghiệm</th>
+            <th>Phương pháp thực hiện</th>
+            <th>Tiêu chí chấp thuận (DoD)</th>
+            <th>Trạng thái Audit Độc Lập</th>
+            <th>Thiết bị Lab bắt buộc</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td>Nguồn cấp & LDO 2.8V</td>
+            <td>Đo điện áp tĩnh TP6 (+3.3V) và TP5 (+VS_A), đo dòng tĩnh Iq khi cấp nguồn pin.</td>
+            <td>Đo +VS_A theo dung sai MCP1700-2802E tại điện áp vào, tải và nhiệt độ thực; kiểm chập khi tắt nguồn, giới hạn dòng khi cấp bench.</td>
+            <td><span style="color: #16a34a; font-weight: bold;">CHỜ ĐO BENCH</span></td>
+            <td>DMM 6.5 digits, Nguồn DC tuyến tính</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Giao tiếp I2C 400kHz</td>
+            <td>Quét địa chỉ 0x48 (ADS1115) và 0x57 (MAX30102), đo thời gian tăng tr với Rpullup 4.7k.</td>
+            <td>Phát hiện đúng 2 địa chỉ, thời gian tăng tr &lt; 300ns (với Cb &le; 50pF).</td>
+            <td><span style="color: #16a34a; font-weight: bold;">CHỜ ĐO BENCH</span></td>
+            <td>Logic Analyzer 100MHz, Dao động ký số</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>Nhiễu, CMRR & Bộ lọc</td>
+            <td>Đo điện áp tham chiếu TP2 (REFOUT), đo đáp ứng HPF và LPF; f0 LPF lý tưởng 41.09 Hz.</td>
+            <td>Đo REFOUT gần 1.4 V và đáp ứng/gain thực; chưa có CMRR đo của toàn bo.</td>
+            <td><span style="color: #16a34a; font-weight: bold;">CHỜ ĐO BENCH</span></td>
+            <td>Máy phân tích phổ mạng (Bode 100 / Signal Generator)</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>Chức năng Lead-Off</td>
+            <td>Mô phỏng hở mạch điện cực và đóng mạch bằng tải trở da tương đương (100k - 1M).</td>
+            <td>LOD+/LOD- lên mức cao theo rail analog 2.8 V khi hở, về mức thấp (0V) khi tiếp xúc.</td>
+            <td><span style="color: #d97706; font-weight: bold;">CHỜ ĐO LAB</span></td>
+            <td>Mô hình tải trở giả lập tiếp xúc sinh học</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>Thu nhận tín hiệu ECG</td>
+            <td>Cấp tín hiệu sóng tim chuẩn từ nguồn mô phỏng tín hiệu y sinh chuẩn vào Jack 3.5mm.</td>
+            <td>Dạng sóng P-QRS-T rõ nét, nhận dạng đỉnh R chính xác qua giải thuật Pan-Tompkins.</td>
+            <td><span style="color: #d97706; font-weight: bold;">CHỜ ĐO LAB</span></td>
+            <td>Máy phát xung tim chuẩn (Patient Simulator Fluke/Rigol)</td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td>Cảm biến quang PPG</td>
+            <td>Dùng optical phantom để kiểm module đã xác nhận; chưa cho phép thử gắn điện cực lên người.</td>
+            <td>Sóng thể tích nhịp nhàng, tách biệt rõ đỉnh tâm thu và chân sóng.</td>
+            <td><span style="color: #d97706; font-weight: bold;">CHỜ ĐO LAB</span></td>
+            <td>Mô hình ngón tay giả lập quang học (Optical Phantom)</td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td>Ước lượng PAT/PTT</td>
+            <td>Xử lý đồng bộ 2 luồng dữ liệu, đánh dấu timestamp chưa hiệu chuẩn; chưa áp dụng bù trễ cố định để suy ra PTT.</td>
+            <td>Đo sai số với nguồn ECG/PPG giả lập chung clock; không lấy một khoảng PAT cố định làm tiêu chuẩn chính xác.</td>
+            <td><span style="color: #16a34a; font-weight: bold;">CHỈ KIỂM DỮ LIỆU MÔ PHỎNG</span></td>
+            <td>Hệ thống thu thập dữ liệu nhúng đồng bộ</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="callout-warn"><h3>Trạng thái bàn giao ngày 13/11/2026</h3><p>CAD mới đã qua kiểm tra trong outputs/final_verification_20261113, DRC không có loại bị bỏ qua. Gerber đã mở và render bằng gerbv 2.10.0; 86 lỗ và slot được đối chiếu với PCB. gerbv bỏ qua thuộc tính metadata X2, không có lỗi parser hình học khác được ghi nhận. Gói cũ bị giữ trạng thái REJECT, bản PCB trước dựng lại được bảo toàn. Firmware và host đã tích hợp bản sửa ngày 13/11/2026: packet tách E/P giữ từng mẫu FIFO, báo lỗi I²C và timestamp chưa chắc chắn, giữ queue-drop đến khi enqueue thành công. Test helper C biên dịch mới, enqueue thực trên host harness, protocol và DSP đều PASS; mô phỏng nhận 13 nhịp. Build ESP-IDF v5.5 cho ESP32 đã PASS, gồm ứng dụng 776160 byte, bootloader và partition table; lần build kiểm lại cũng PASS. Chưa kiểm timing trên bo thật; PAT từ firmware vẫn bị khóa. Chưa phát hành chế tạo, chưa nghiệm thu sản phẩm và không cho phép sử dụng trên người.</p></div>
+<h3>Nguồn kỹ thuật</h3><ul>
+<li><a href="https://www.analog.com/media/en/technical-documentation/data-sheets/AD8232.pdf">AD8232 Rev. D, Figure 60 và Figure 66</a></li>
+<li><a href="https://www.ti.com/lit/ds/symlink/ads1115.pdf">TI ADS1115, package DGS và conversion-ready</a></li>
+<li><a href="https://ww1.microchip.com/downloads/en/DeviceDoc/MCP1700-Low-Quiescent-Current-LDO-20001826E.pdf">Microchip MCP1700 DS20001826E</a></li>
+<li><a href="https://www.analog.com/media/en/technical-documentation/data-sheets/MAX30102.pdf">MAX30102, FIFO và interrupt</a></li>
+</ul></body></html>
