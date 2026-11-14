@@ -45,7 +45,15 @@
 #define PPG_SAMPLE_PERIOD_US 2500ULL
 #define ECG_SAMPLE_PERIOD_US 2105ULL
 
-#include "network_config.local.h"
+#if defined(__has_include)
+#  if __has_include("network_config.local.h")
+#    include "network_config.local.h"
+#  else
+#    include "network_config.example.h"
+#  endif
+#else
+#  include "network_config.example.h"
+#endif
 #define CONFIG_UDP_PORT 5005
 
 #define QUEUE_SIZE_ISR 128

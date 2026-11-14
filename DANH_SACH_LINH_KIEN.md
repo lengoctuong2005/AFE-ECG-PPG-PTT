@@ -1,6 +1,6 @@
 # Danh sách linh kiện cho 1 bo AFE ECG + PPG PAT
 
-Đối chiếu BOM của thiết kế hiện hành: `outputs/narrow_verified_20261113/BOM.csv`.
+Đối chiếu BOM của thiết kế hiện hành: `outputs/print_preflight_20261114/BOM.csv`.
 
 **Mua theo cột “Cần dùng”; cột “Nên mua” chỉ là gợi ý dự phòng khi hàn.** Chưa có giá hoặc mã nhà bán được xác minh. Đây là danh sách chuẩn bị prototype, không phải BOM lắp ráp đã được phê duyệt đầy đủ MPN.
 
@@ -55,7 +55,7 @@ U1/U2/U3 trên PCB là **IC rời**, không phải vị trí cắm module AD8232
 | ESP32-DevKitC V4 dùng ESP32-WROOM-32E, 38 chân | 1 board | Thiết kế theo hai hàng 19 chân, pitch dọc 2.54 mm, khoảng cách tâm hai hàng 25.4 mm. Đối chiếu đúng bản vẽ, thứ tự chân và chiều USB/anten; không coi mọi “ESP32 38 pin” là tương thích. |
 | Socket cái thẳng 1×19, pitch 2.54 mm | 2 thanh | Hàn vào J2 để cắm ESP32 có chân đực. Có thể dùng thanh dài hơn rồi cắt chính xác. Không dùng header 2×19 hai hàng sát nhau. |
 | Module MAX30102 | 1 module | **Chưa chốt mã module thương mại.** J3 giả định chân 1–7 là VIN 3.3 V, SCL, SDA, INT, RD, IRD, GND. Phải xác nhận nguồn, level-shift và pull-up/INT của module; không cắm trực tiếp breakout chưa rõ pinout. |
-| Đầu nối 1×7, pitch 2.54 mm cho J3 | 1 thanh | Chọn socket cái nếu module có chân đực và đúng kích thước; hoặc header đực để nối dây jumper. Chỉ mua một phương án lắp đã chốt. RD/IRD không dùng. |
+| Đầu nối 1×7, pitch 2.54 mm cho J3 | 1 thanh | Dùng header và dây tới đầu PPG rời. Hai hàng J3/J2 chỉ cách tâm 5 mm, chưa xác nhận breakout cắm trực tiếp. Kiểm mapping từng dây, mức nguồn/I²C/INT, chiều đầu cắm và chống kéo; RD/IRD không dùng. |
 | Jack stereo 3.5 mm SJ1-3533NG | 1 | Đúng loại chân và hướng nằm ngang theo footprint J1; không mua jack 3.5 mm bất kỳ chỉ vì cùng đường kính. |
 | Cáp TRS 3.5 mm ba dây | 1 | Mapping bo: Tip → RA, Ring → LA, Sleeve → RL. Kiểm thông mạch cáp thực trước sử dụng; nhãn màu không chứng minh thứ tự dây. Chuẩn bị cho nguồn tín hiệu giả lập, chưa dùng người làm tải thử. |
 | Cáp USB phù hợp ESP32 DevKit thực | 1 | Để nạp/chạy thử trên bàn với tín hiệu giả lập; DevKitC V4 chính hãng dùng Micro-USB. Không cấp đồng thời nhiều nguồn khi chưa kiểm backfeed. |
